@@ -1,17 +1,42 @@
-
-service: challenge
-app: serverless-guru-challenge
-
+service: serverless-guru-challenge
+configValidationMode: error
 frameworkVersion: '2'
 
 provider:
   name: aws
   runtime: nodejs12.x
   lambdaHashingVersion: 20201221
-
+  profile: default
   stage: dev
   region: eu-central-1
 
 functions:
-  hello:
-    handler: handler.hello
+  getStudent:
+    handler: handler.getStudent
+
+custom:
+  stages:
+    - dev
+    - prod
+  output: 
+    file: ./front/src/stack.json
+  appSync:
+    name: ${self:service}-${self:provider.stage}
+    authenticationType: API_KEY
+    mappingTemplates:
+      - dataSource: getStudentDS
+        type: Query
+        field: Student
+        request: false
+        response: false
+    dataSources:
+      - type: AWS_LAMBDA
+        name: getStudentDS
+        description: 'Get Student DataSource'
+        config:
+          functionName: getStudent
+package:
+  patterns:
+    -'!.git/**'
+plugins:
+   - serverless-appsync-plugin

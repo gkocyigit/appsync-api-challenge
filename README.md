@@ -16,13 +16,13 @@ The CI/CD should trigger a deployment based on a git push to the master branch w
 
 3. There should be 4-5 lambdas that include the following CRUD functionality (Create, Read, Update, Delete) *don't use mapping templates directly to DynamoDB from AppSync
 
-3. Build the CI/CD pipeline to support multi-stage deployments
+4. Build the CI/CD pipeline to support multi-stage deployments
 
-4. The template should be fully working and documented
+5. The template should be fully working and documented
 
-4. A public GitHub repository must be shared with frequent commits
+6. A public GitHub repository must be shared with frequent commits
 
-5. A video should be recorded (www.loom.com) of you talking over the application code, IAC, and any additional areas you want to highlight in your solution to demonstrate additional skills
+7. A video should be recorded (www.loom.com) of you talking over the application code, IAC, and any additional areas you want to highlight in your solution to demonstrate additional skills
 
 Please spend only what you consider a reasonable amount of time for this.
 
