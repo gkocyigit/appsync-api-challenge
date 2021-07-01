@@ -1,0 +1,12 @@
+schema {
+    query:Query
+}
+
+type Query {
+    getStudent(handle: String!): Student!
+}
+
+type Student {
+    name: String!
+    score: Int!
+}

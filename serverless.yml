@@ -20,23 +20,91 @@ custom:
     - prod
   output: 
     file: ./front/src/stack.json
-  appSync:
-    name: ${self:service}-${self:provider.stage}
-    authenticationType: API_KEY
-    mappingTemplates:
-      - dataSource: getStudentDS
-        type: Query
-        field: Student
-        request: false
-        response: false
-    dataSources:
-      - type: AWS_LAMBDA
-        name: getStudentDS
-        description: 'Get Student DataSource'
-        config:
-          functionName: getStudent
+
+resources:
+  Resources:
+    LambdaRole:
+      Type: AWS::IAM::Role
+      Properties:
+        AssumeRolePolicyDocument:
+          Version: "2012-10-17"
+          Statement:
+            - Effect: Allow
+              Principal:
+                Service: appsync.amazonaws.com
+              Action:
+                - sts:AssumeRole
+        Policies:
+          - PolicyName: appsync-lambda-getStudent-access
+            PolicyDocument:
+              Version: "2012-10-17"
+              Statement:
+                - Effect: Allow
+                  Action: lambda:invokeFunction
+                  Resource:
+                    - !GetAtt GetStudentLambdaFunction.Arn
+                    - !Join [ "", [ !GetAtt GetStudentLambdaFunction.Arn, "*" ] ]
+
+
+    GetStudentLambdaPermission:
+      Type: AWS::Lambda::Permission
+      Properties:
+        FunctionName: !GetAtt GetStudentLambdaFunction.Arn
+        Action: lambda:InvokeFunction
+        Principal: !Join ["", ["logs.", !Ref AWS::Region, ".amazonaws.com" ] ]
+
+
+    AppSyncApi:
+      Type: AWS::AppSync::GraphQLApi
+      Properties:
+        AuthenticationType: "API_KEY"
+        Name: ${self:service}-${self:provider.stage}
+
+
+    AppSyncAPIKey:
+      Type: AWS::AppSync::ApiKey
+      Properties:
+        ApiId: !GetAtt AppSyncApi.ApiId
+
+
+    AppSyncSchema:
+      Type: AWS::AppSync::GraphQLSchema
+      Properties:
+        ApiId: !GetAtt AppSyncApi.ApiId
+        Definition: ${file(./schema.graphql)}
+
+
+    GetStudentLambdaDataSource:
+      Type: AWS::AppSync::DataSource
+      Properties:
+        Type: AWS_LAMBDA
+        Name: getStudentDS_${self:provider.stage}
+        ApiId: !GetAtt AppSyncApi.ApiId
+        ServiceRoleArn: !GetAtt LambdaRole.Arn
+        LambdaConfig:
+          LambdaFunctionArn: !GetAtt GetStudentLambdaFunction.Arn
+
+
+    GetStudentQueryResolver:
+      Type: AWS::AppSync::Resolver
+      DependsOn: AppSyncSchema
+      Properties:
+        ApiId: !GetAtt AppSyncApi.ApiId
+        TypeName: Query
+        FieldName: getStudent
+        DataSourceName: !GetAtt GetStudentLambdaDataSource.Name
+        
+  Outputs:
+    AppSyncAPIKey:
+      Description: The AppSync API Key used for authorizing users making GraphQL invocations.
+      Value: !GetAtt AppSyncAPIKey.ApiKey
+    GraphQLApiEndpoint:
+      Description: The URL to the GraphQL Endpoint
+      Value: !GetAtt AppSyncApi.GraphQLUrl
+    GraphQLApiId:
+      Description: The API ID of the GraphQL API
+      Value: !GetAtt AppSyncApi.ApiId
+
 package:
   patterns:
     -'!.git/**'
-plugins:
-   - serverless-appsync-plugin
