@@ -3,6 +3,7 @@ schema {
 }
 
 type Query {
+    getStudents: [Student]
     getStudent(handle: String!): Student!
 }
 

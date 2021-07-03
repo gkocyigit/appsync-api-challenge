@@ -1,0 +1,24 @@
+{
+  "name": "challenge",
+  "version": "1.0.0",
+  "description": "Build a Serverless Framework API with AWS AppSync which supports CRUD functionality (Create, Read, Update, Delete) and use GitHub Actions CI/CD pipeline, AWS CodePipeline, or Serverless Pro CI/CD.",
+  "main": "handler.js",
+  "dependencies": {
+    "aws-sdk": "^2.939.0",
+    "serverless-appsync-plugin": "^1.10.0"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/gkocyigit/appsync-api-challenge.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/gkocyigit/appsync-api-challenge/issues"
+  },
+  "homepage": "https://github.com/gkocyigit/appsync-api-challenge#readme"
+}
