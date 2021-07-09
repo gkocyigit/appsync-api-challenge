@@ -9,6 +9,13 @@ provider:
   profile: default
   stage: dev
   region: eu-central-1
+  iam:
+    role:
+      statements:
+        - Effect: Allow
+          Action:
+            - dynamodb:*
+          Resource: '*'
 
 functions:
   getStudents:

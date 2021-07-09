@@ -38,22 +38,16 @@ module.exports.addStudent = (event) => {
    console.log(student)
    var params={
       TableName:"Student",
-      Item:student
+      Item:student,
    }
 
-   console.log("a")
-   dynamo.put(params,function(err,data){
-      console.log("1")
-      console.log(err)
-      console.log(JSON.stringify(data))
-      if(err){
-         return {"error": "There is an error while adding new student"}
-      }
-      console.log(data);
-      result=data.Items.map((x)=>new {"name":x.name,"score":x.score})
-      console.log(result);
-      return result;
+   dynamo.put(params).promise()
+   .then(()=>{
+      return student
    })
-   console.log("z")
+   .catch((err)=>{
+      console.log(err);
+      return {"error": "There is an error while adding new student"}
+   })
 };
 
