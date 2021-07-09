@@ -4,15 +4,15 @@ schema {
 }
 
 type Mutation {
-    addStudent(name: String, score: Int!): Student
+    addStudent(name: String!, score: Int): Student
 }
 
 type Query {
     getStudents: [Student]
-    getStudent(name: String): Student!
+    getStudent(name: String!): Student!
 }
 
 type Student {
-    name: String
-    score: Int!
+    name: String!
+    score: Int
 }
