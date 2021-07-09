@@ -1,0 +1,18 @@
+schema {
+    query:Query
+    mutation:Mutation
+}
+
+type Mutation {
+    addStudent(name: String, score: Int!): Student
+}
+
+type Query {
+    getStudents: [Student]
+    getStudent(name: String): Student!
+}
+
+type Student {
+    name: String
+    score: Int!
+}

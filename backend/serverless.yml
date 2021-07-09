@@ -15,6 +15,8 @@ functions:
     handler: handler.getStudents
   getStudent:
     handler: handler.getStudent
+  addStudent:
+    handler: handler.addStudent
 
 custom:
   stages:
@@ -65,6 +67,8 @@ resources:
                     - !Join [ "", [ !GetAtt GetStudentLambdaFunction.Arn, "*" ] ]
                     - !GetAtt GetStudentsLambdaFunction.Arn
                     - !Join [ "", [ !GetAtt GetStudentsLambdaFunction.Arn, "*" ] ]
+                    - !GetAtt AddStudentLambdaFunction.Arn
+                    - !Join [ "", [ !GetAtt AddStudentLambdaFunction.Arn, "*" ] ]
 
     GetStudentsLambdaPermission:
       Type: AWS::Lambda::Permission
@@ -77,6 +81,13 @@ resources:
       Type: AWS::Lambda::Permission
       Properties:
         FunctionName: !GetAtt GetStudentLambdaFunction.Arn
+        Action: lambda:InvokeFunction
+        Principal: !Join ["", ["logs.", !Ref AWS::Region, ".amazonaws.com" ] ]
+    
+    AddStudentLambdaPermission:
+      Type: AWS::Lambda::Permission
+      Properties:
+        FunctionName: !GetAtt AddStudentLambdaFunction.Arn
         Action: lambda:InvokeFunction
         Principal: !Join ["", ["logs.", !Ref AWS::Region, ".amazonaws.com" ] ]
 
@@ -140,6 +151,26 @@ resources:
         TypeName: Query
         FieldName: getStudents
         DataSourceName: !GetAtt GetStudentsLambdaDataSource.Name
+    
+    AddStudentLambdaDataSource:
+      Type: AWS::AppSync::DataSource
+      Properties:
+        Type: AWS_LAMBDA
+        Name: addStudentDS_${self:provider.stage}
+        ApiId: !GetAtt AppSyncApi.ApiId
+        ServiceRoleArn: !GetAtt LambdaRole.Arn
+        LambdaConfig:
+          LambdaFunctionArn: !GetAtt AddStudentLambdaFunction.Arn
+
+
+    AddStudentQueryResolver:
+      Type: AWS::AppSync::Resolver
+      DependsOn: AppSyncSchema
+      Properties:
+        ApiId: !GetAtt AppSyncApi.ApiId
+        TypeName: Mutation
+        FieldName: addStudent
+        DataSourceName: !GetAtt AddStudentLambdaDataSource.Name
         
   Outputs:
     AppSyncAPIKey:
