@@ -1,0 +1,701 @@
+{
+  "AWSTemplateFormatVersion": "2010-09-09",
+  "Description": "The AWS CloudFormation template for this Serverless application",
+  "Resources": {
+    "ServerlessDeploymentBucket": {
+      "Type": "AWS::S3::Bucket",
+      "Properties": {
+        "BucketEncryption": {
+          "ServerSideEncryptionConfiguration": [
+            {
+              "ServerSideEncryptionByDefault": {
+                "SSEAlgorithm": "AES256"
+              }
+            }
+          ]
+        }
+      }
+    },
+    "ServerlessDeploymentBucketPolicy": {
+      "Type": "AWS::S3::BucketPolicy",
+      "Properties": {
+        "Bucket": {
+          "Ref": "ServerlessDeploymentBucket"
+        },
+        "PolicyDocument": {
+          "Statement": [
+            {
+              "Action": "s3:*",
+              "Effect": "Deny",
+              "Principal": "*",
+              "Resource": [
+                {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "arn:",
+                      {
+                        "Ref": "AWS::Partition"
+                      },
+                      ":s3:::",
+                      {
+                        "Ref": "ServerlessDeploymentBucket"
+                      },
+                      "/*"
+                    ]
+                  ]
+                },
+                {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "arn:",
+                      {
+                        "Ref": "AWS::Partition"
+                      },
+                      ":s3:::",
+                      {
+                        "Ref": "ServerlessDeploymentBucket"
+                      }
+                    ]
+                  ]
+                }
+              ],
+              "Condition": {
+                "Bool": {
+                  "aws:SecureTransport": false
+                }
+              }
+            }
+          ]
+        }
+      }
+    },
+    "GetStudentsLogGroup": {
+      "Type": "AWS::Logs::LogGroup",
+      "Properties": {
+        "LogGroupName": "/aws/lambda/serverless-guru-challenge-dev-getStudents"
+      }
+    },
+    "GetStudentLogGroup": {
+      "Type": "AWS::Logs::LogGroup",
+      "Properties": {
+        "LogGroupName": "/aws/lambda/serverless-guru-challenge-dev-getStudent"
+      }
+    },
+    "AddStudentLogGroup": {
+      "Type": "AWS::Logs::LogGroup",
+      "Properties": {
+        "LogGroupName": "/aws/lambda/serverless-guru-challenge-dev-addStudent"
+      }
+    },
+    "IamRoleLambdaExecution": {
+      "Type": "AWS::IAM::Role",
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Version": "2012-10-17",
+          "Statement": [
+            {
+              "Effect": "Allow",
+              "Principal": {
+                "Service": [
+                  "lambda.amazonaws.com"
+                ]
+              },
+              "Action": [
+                "sts:AssumeRole"
+              ]
+            }
+          ]
+        },
+        "Policies": [
+          {
+            "PolicyName": {
+              "Fn::Join": [
+                "-",
+                [
+                  "serverless-guru-challenge",
+                  "dev",
+                  "lambda"
+                ]
+              ]
+            },
+            "PolicyDocument": {
+              "Version": "2012-10-17",
+              "Statement": [
+                {
+                  "Effect": "Allow",
+                  "Action": [
+                    "logs:CreateLogStream",
+                    "logs:CreateLogGroup"
+                  ],
+                  "Resource": [
+                    {
+                      "Fn::Sub": "arn:${AWS::Partition}:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/serverless-guru-challenge-dev*:*"
+                    }
+                  ]
+                },
+                {
+                  "Effect": "Allow",
+                  "Action": [
+                    "logs:PutLogEvents"
+                  ],
+                  "Resource": [
+                    {
+                      "Fn::Sub": "arn:${AWS::Partition}:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/serverless-guru-challenge-dev*:*:*"
+                    }
+                  ]
+                },
+                {
+                  "Effect": "Allow",
+                  "Action": [
+                    "dynamodb:*"
+                  ],
+                  "Resource": "*"
+                }
+              ]
+            }
+          }
+        ],
+        "Path": "/",
+        "RoleName": {
+          "Fn::Join": [
+            "-",
+            [
+              "serverless-guru-challenge",
+              "dev",
+              {
+                "Ref": "AWS::Region"
+              },
+              "lambdaRole"
+            ]
+          ]
+        }
+      }
+    },
+    "GetStudentsLambdaFunction": {
+      "Type": "AWS::Lambda::Function",
+      "Properties": {
+        "Code": {
+          "S3Bucket": {
+            "Ref": "ServerlessDeploymentBucket"
+          },
+          "S3Key": "serverless/serverless-guru-challenge/dev/1625909379923-2021-07-10T09:29:39.923Z/serverless-guru-challenge.zip"
+        },
+        "Handler": "handler.getStudents",
+        "Runtime": "nodejs12.x",
+        "FunctionName": "serverless-guru-challenge-dev-getStudents",
+        "MemorySize": 1024,
+        "Timeout": 6,
+        "Role": {
+          "Fn::GetAtt": [
+            "IamRoleLambdaExecution",
+            "Arn"
+          ]
+        }
+      },
+      "DependsOn": [
+        "GetStudentsLogGroup"
+      ]
+    },
+    "GetStudentLambdaFunction": {
+      "Type": "AWS::Lambda::Function",
+      "Properties": {
+        "Code": {
+          "S3Bucket": {
+            "Ref": "ServerlessDeploymentBucket"
+          },
+          "S3Key": "serverless/serverless-guru-challenge/dev/1625909379923-2021-07-10T09:29:39.923Z/serverless-guru-challenge.zip"
+        },
+        "Handler": "handler.getStudent",
+        "Runtime": "nodejs12.x",
+        "FunctionName": "serverless-guru-challenge-dev-getStudent",
+        "MemorySize": 1024,
+        "Timeout": 6,
+        "Role": {
+          "Fn::GetAtt": [
+            "IamRoleLambdaExecution",
+            "Arn"
+          ]
+        }
+      },
+      "DependsOn": [
+        "GetStudentLogGroup"
+      ]
+    },
+    "AddStudentLambdaFunction": {
+      "Type": "AWS::Lambda::Function",
+      "Properties": {
+        "Code": {
+          "S3Bucket": {
+            "Ref": "ServerlessDeploymentBucket"
+          },
+          "S3Key": "serverless/serverless-guru-challenge/dev/1625909379923-2021-07-10T09:29:39.923Z/serverless-guru-challenge.zip"
+        },
+        "Handler": "handler.addStudent",
+        "Runtime": "nodejs12.x",
+        "FunctionName": "serverless-guru-challenge-dev-addStudent",
+        "MemorySize": 1024,
+        "Timeout": 6,
+        "Role": {
+          "Fn::GetAtt": [
+            "IamRoleLambdaExecution",
+            "Arn"
+          ]
+        }
+      },
+      "DependsOn": [
+        "AddStudentLogGroup"
+      ]
+    },
+    "GetStudentsLambdaVersionc3GNOAikEhXqYcDj7pBnImHzFNSUuE4hvnH9zFOjTo": {
+      "Type": "AWS::Lambda::Version",
+      "DeletionPolicy": "Retain",
+      "Properties": {
+        "FunctionName": {
+          "Ref": "GetStudentsLambdaFunction"
+        },
+        "CodeSha256": "LkeI1H6MQ6OArYyDr7UyQJnM2IBpd0XVDTcgMCl4kHc="
+      }
+    },
+    "GetStudentLambdaVersionbKHN1o0ucoAYadz8PnxHE4eWzrR3jX9gWaNaDWh0": {
+      "Type": "AWS::Lambda::Version",
+      "DeletionPolicy": "Retain",
+      "Properties": {
+        "FunctionName": {
+          "Ref": "GetStudentLambdaFunction"
+        },
+        "CodeSha256": "LkeI1H6MQ6OArYyDr7UyQJnM2IBpd0XVDTcgMCl4kHc="
+      }
+    },
+    "AddStudentLambdaVersionZ1NFBzag9TSXU2Zq8qUpyeDBF7ToPd43PEvQm6i4": {
+      "Type": "AWS::Lambda::Version",
+      "DeletionPolicy": "Retain",
+      "Properties": {
+        "FunctionName": {
+          "Ref": "AddStudentLambdaFunction"
+        },
+        "CodeSha256": "LkeI1H6MQ6OArYyDr7UyQJnM2IBpd0XVDTcgMCl4kHc="
+      }
+    },
+    "StudentDynamoDbTable": {
+      "Type": "AWS::DynamoDB::Table",
+      "DeletionPolicy": "Delete",
+      "Properties": {
+        "AttributeDefinitions": [
+          {
+            "AttributeName": "name",
+            "AttributeType": "S"
+          }
+        ],
+        "KeySchema": [
+          {
+            "AttributeName": "name",
+            "KeyType": "HASH"
+          }
+        ],
+        "ProvisionedThroughput": {
+          "ReadCapacityUnits": 4,
+          "WriteCapacityUnits": 4
+        },
+        "TableName": "Student"
+      }
+    },
+    "LambdaRole": {
+      "Type": "AWS::IAM::Role",
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Version": "2012-10-17",
+          "Statement": [
+            {
+              "Effect": "Allow",
+              "Principal": {
+                "Service": "appsync.amazonaws.com"
+              },
+              "Action": [
+                "sts:AssumeRole"
+              ]
+            }
+          ]
+        },
+        "Policies": [
+          {
+            "PolicyName": "appsync-lambda",
+            "PolicyDocument": {
+              "Version": "2012-10-17",
+              "Statement": [
+                {
+                  "Effect": "Allow",
+                  "Action": "lambda:invokeFunction",
+                  "Resource": [
+                    {
+                      "Fn::GetAtt": [
+                        "GetStudentLambdaFunction",
+                        "Arn"
+                      ]
+                    },
+                    {
+                      "Fn::Join": [
+                        "",
+                        [
+                          {
+                            "Fn::GetAtt": [
+                              "GetStudentLambdaFunction",
+                              "Arn"
+                            ]
+                          },
+                          "*"
+                        ]
+                      ]
+                    },
+                    {
+                      "Fn::GetAtt": [
+                        "GetStudentsLambdaFunction",
+                        "Arn"
+                      ]
+                    },
+                    {
+                      "Fn::Join": [
+                        "",
+                        [
+                          {
+                            "Fn::GetAtt": [
+                              "GetStudentsLambdaFunction",
+                              "Arn"
+                            ]
+                          },
+                          "*"
+                        ]
+                      ]
+                    },
+                    {
+                      "Fn::GetAtt": [
+                        "AddStudentLambdaFunction",
+                        "Arn"
+                      ]
+                    },
+                    {
+                      "Fn::Join": [
+                        "",
+                        [
+                          {
+                            "Fn::GetAtt": [
+                              "AddStudentLambdaFunction",
+                              "Arn"
+                            ]
+                          },
+                          "*"
+                        ]
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          }
+        ]
+      }
+    },
+    "GetStudentsLambdaPermission": {
+      "Type": "AWS::Lambda::Permission",
+      "Properties": {
+        "FunctionName": {
+          "Fn::GetAtt": [
+            "GetStudentsLambdaFunction",
+            "Arn"
+          ]
+        },
+        "Action": "lambda:InvokeFunction",
+        "Principal": {
+          "Fn::Join": [
+            "",
+            [
+              "logs.",
+              {
+                "Ref": "AWS::Region"
+              },
+              ".amazonaws.com"
+            ]
+          ]
+        }
+      }
+    },
+    "GetStudentLambdaPermission": {
+      "Type": "AWS::Lambda::Permission",
+      "Properties": {
+        "FunctionName": {
+          "Fn::GetAtt": [
+            "GetStudentLambdaFunction",
+            "Arn"
+          ]
+        },
+        "Action": "lambda:InvokeFunction",
+        "Principal": {
+          "Fn::Join": [
+            "",
+            [
+              "logs.",
+              {
+                "Ref": "AWS::Region"
+              },
+              ".amazonaws.com"
+            ]
+          ]
+        }
+      }
+    },
+    "AddStudentLambdaPermission": {
+      "Type": "AWS::Lambda::Permission",
+      "Properties": {
+        "FunctionName": {
+          "Fn::GetAtt": [
+            "AddStudentLambdaFunction",
+            "Arn"
+          ]
+        },
+        "Action": "lambda:InvokeFunction",
+        "Principal": {
+          "Fn::Join": [
+            "",
+            [
+              "logs.",
+              {
+                "Ref": "AWS::Region"
+              },
+              ".amazonaws.com"
+            ]
+          ]
+        }
+      }
+    },
+    "AppSyncApi": {
+      "Type": "AWS::AppSync::GraphQLApi",
+      "Properties": {
+        "AuthenticationType": "API_KEY",
+        "Name": "serverless-guru-challenge-dev"
+      }
+    },
+    "AppSyncAPIKey": {
+      "Type": "AWS::AppSync::ApiKey",
+      "Properties": {
+        "ApiId": {
+          "Fn::GetAtt": [
+            "AppSyncApi",
+            "ApiId"
+          ]
+        }
+      }
+    },
+    "AppSyncSchema": {
+      "Type": "AWS::AppSync::GraphQLSchema",
+      "Properties": {
+        "ApiId": {
+          "Fn::GetAtt": [
+            "AppSyncApi",
+            "ApiId"
+          ]
+        },
+        "Definition": "schema {\r\n    query:Query\r\n    mutation:Mutation\r\n}\r\n\r\ntype Mutation {\r\n    addStudent(name: String!, score: Int): Student\r\n}\r\n\r\ntype Query {\r\n    getStudents: [Student]\r\n    getStudent(name: String!): Student!\r\n}\r\n\r\ntype Student {\r\n    name: String!\r\n    score: Int\r\n}"
+      }
+    },
+    "GetStudentLambdaDataSource": {
+      "Type": "AWS::AppSync::DataSource",
+      "Properties": {
+        "Type": "AWS_LAMBDA",
+        "Name": "getStudentDS_dev",
+        "ApiId": {
+          "Fn::GetAtt": [
+            "AppSyncApi",
+            "ApiId"
+          ]
+        },
+        "ServiceRoleArn": {
+          "Fn::GetAtt": [
+            "LambdaRole",
+            "Arn"
+          ]
+        },
+        "LambdaConfig": {
+          "LambdaFunctionArn": {
+            "Fn::GetAtt": [
+              "GetStudentLambdaFunction",
+              "Arn"
+            ]
+          }
+        }
+      }
+    },
+    "GetStudentQueryResolver": {
+      "Type": "AWS::AppSync::Resolver",
+      "DependsOn": [
+        "AppSyncSchema"
+      ],
+      "Properties": {
+        "ApiId": {
+          "Fn::GetAtt": [
+            "AppSyncApi",
+            "ApiId"
+          ]
+        },
+        "TypeName": "Query",
+        "FieldName": "getStudent",
+        "DataSourceName": {
+          "Fn::GetAtt": [
+            "GetStudentLambdaDataSource",
+            "Name"
+          ]
+        }
+      }
+    },
+    "GetStudentsLambdaDataSource": {
+      "Type": "AWS::AppSync::DataSource",
+      "Properties": {
+        "Type": "AWS_LAMBDA",
+        "Name": "getStudentsDS_dev",
+        "ApiId": {
+          "Fn::GetAtt": [
+            "AppSyncApi",
+            "ApiId"
+          ]
+        },
+        "ServiceRoleArn": {
+          "Fn::GetAtt": [
+            "LambdaRole",
+            "Arn"
+          ]
+        },
+        "LambdaConfig": {
+          "LambdaFunctionArn": {
+            "Fn::GetAtt": [
+              "GetStudentsLambdaFunction",
+              "Arn"
+            ]
+          }
+        }
+      }
+    },
+    "GetStudentsQueryResolver": {
+      "Type": "AWS::AppSync::Resolver",
+      "DependsOn": [
+        "AppSyncSchema"
+      ],
+      "Properties": {
+        "ApiId": {
+          "Fn::GetAtt": [
+            "AppSyncApi",
+            "ApiId"
+          ]
+        },
+        "TypeName": "Query",
+        "FieldName": "getStudents",
+        "DataSourceName": {
+          "Fn::GetAtt": [
+            "GetStudentsLambdaDataSource",
+            "Name"
+          ]
+        }
+      }
+    },
+    "AddStudentLambdaDataSource": {
+      "Type": "AWS::AppSync::DataSource",
+      "Properties": {
+        "Type": "AWS_LAMBDA",
+        "Name": "addStudentDS_dev",
+        "ApiId": {
+          "Fn::GetAtt": [
+            "AppSyncApi",
+            "ApiId"
+          ]
+        },
+        "ServiceRoleArn": {
+          "Fn::GetAtt": [
+            "LambdaRole",
+            "Arn"
+          ]
+        },
+        "LambdaConfig": {
+          "LambdaFunctionArn": {
+            "Fn::GetAtt": [
+              "AddStudentLambdaFunction",
+              "Arn"
+            ]
+          }
+        }
+      }
+    },
+    "AddStudentQueryResolver": {
+      "Type": "AWS::AppSync::Resolver",
+      "DependsOn": [
+        "AppSyncSchema"
+      ],
+      "Properties": {
+        "ApiId": {
+          "Fn::GetAtt": [
+            "AppSyncApi",
+            "ApiId"
+          ]
+        },
+        "TypeName": "Mutation",
+        "FieldName": "addStudent",
+        "DataSourceName": {
+          "Fn::GetAtt": [
+            "AddStudentLambdaDataSource",
+            "Name"
+          ]
+        }
+      }
+    }
+  },
+  "Outputs": {
+    "ServerlessDeploymentBucketName": {
+      "Value": {
+        "Ref": "ServerlessDeploymentBucket"
+      }
+    },
+    "GetStudentsLambdaFunctionQualifiedArn": {
+      "Description": "Current Lambda function version",
+      "Value": {
+        "Ref": "GetStudentsLambdaVersionc3GNOAikEhXqYcDj7pBnImHzFNSUuE4hvnH9zFOjTo"
+      }
+    },
+    "GetStudentLambdaFunctionQualifiedArn": {
+      "Description": "Current Lambda function version",
+      "Value": {
+        "Ref": "GetStudentLambdaVersionbKHN1o0ucoAYadz8PnxHE4eWzrR3jX9gWaNaDWh0"
+      }
+    },
+    "AddStudentLambdaFunctionQualifiedArn": {
+      "Description": "Current Lambda function version",
+      "Value": {
+        "Ref": "AddStudentLambdaVersionZ1NFBzag9TSXU2Zq8qUpyeDBF7ToPd43PEvQm6i4"
+      }
+    },
+    "AppSyncAPIKey": {
+      "Description": "The AppSync API Key used for authorizing users making GraphQL invocations.",
+      "Value": {
+        "Fn::GetAtt": [
+          "AppSyncAPIKey",
+          "ApiKey"
+        ]
+      }
+    },
+    "GraphQLApiEndpoint": {
+      "Description": "The URL to the GraphQL Endpoint",
+      "Value": {
+        "Fn::GetAtt": [
+          "AppSyncApi",
+          "GraphQLUrl"
+        ]
+      }
+    },
+    "GraphQLApiId": {
+      "Description": "The API ID of the GraphQL API",
+      "Value": {
+        "Fn::GetAtt": [
+          "AppSyncApi",
+          "ApiId"
+        ]
+      }
+    }
+  }
+}
