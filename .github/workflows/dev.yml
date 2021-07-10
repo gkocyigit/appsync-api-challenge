@@ -11,13 +11,11 @@ jobs:
     - uses: actions/setup-node@v1
       with:
         node-version: '12.x'
-    - name: Install Serverless Framework
-      run: npm install -g serverless
-    - name: Serverless AWS authentication
-      run: sls config credentials --provider aws --key ${{ secrets.AWS_KEY }} --secret ${{ secrets.AWS_SECRET }}
-    - name: Navigate to backend folder
-      run: cd backend && ls -al
-    - name: Install NPM dependencies
-      run: npm install
-    - name: Deploy Serverless Application
-      run:  sls deploy -s dev --config serverless.yml
+    - run: npm ci
+    - name: Serverless Deploy
+      uses: serverless/github-action@master
+      with:
+        args: deploy -s dev
+      env:
+        AWS_ACCESS_KEY_ID: ${{ secrets.AWS_KEY }}
+        AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET }}
