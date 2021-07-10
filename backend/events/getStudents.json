@@ -1,0 +1,47 @@
+{
+    "arguments": {},
+    "identity": null,
+    "source": null,
+    "request": {
+      "headers": {
+        "x-forwarded-for": "46.196.93.226, 130.176.33.88",
+        "sec-ch-ua-mobile": "?0",
+        "cloudfront-viewer-country": "TR",
+        "cloudfront-is-tablet-viewer": "false",
+        "x-amzn-requestid": "7c3e0a57-1032-43d7-8c22-1bc24d0b1bfe",
+        "via": "2.0 2bb969477369da45208db698e8e34163.cloudfront.net (CloudFront)",
+        "cloudfront-forwarded-proto": "https",
+        "origin": "https://eu-central-1.console.aws.amazon.com",
+        "content-length": "118",
+        "x-forwarded-proto": "https",
+        "host": "7ow4dxchwvahpgi62aeed7crgy.appsync-api.eu-central-1.amazonaws.com",
+        "accept-language": "tr-TR,tr;q=0.9,en-US;q=0.8,en;q=0.7",
+        "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36 OPR/77.0.4054.203",
+        "cloudfront-is-mobile-viewer": "false",
+        "accept": "application/json, text/plain, */*",
+        "cloudfront-is-smarttv-viewer": "false",
+        "accept-encoding": "gzip, deflate, br",
+        "referer": "https://eu-central-1.console.aws.amazon.com/",
+        "x-api-key": "da2-odtytzf4rrarjc5fhorltttp5y",
+        "content-type": "application/json",
+        "sec-fetch-mode": "cors",
+        "x-amz-cf-id": "VGXVM4mbbJga_wNFqbg0GmWa1i3TUJHuILWtMS1m2uWBcsnZXZW68w==",
+        "x-amzn-trace-id": "Root=1-60e96045-0ce17a4c01ded9b73f96f87f",
+        "sec-fetch-dest": "empty",
+        "x-amz-user-agent": "AWS-Console-AppSync/",
+        "cloudfront-is-desktop-viewer": "true",
+        "sec-fetch-site": "cross-site",
+        "sec-ch-ua": "'Opera';v='77', 'Chromium';v='91', ';Not A Brand';v='99'",
+        "x-forwarded-port": "443"
+      }
+    },
+    "prev": null,
+    "info": {
+      "selectionSetList": [ "name", "score" ],
+      "selectionSetGraphQL": "{\n  name\n  score\n}",
+      "parentTypeName": "Query",
+      "fieldName": "getStudents",
+      "variables": {}
+    },
+    "stash": {}
+  }
