@@ -25,6 +25,8 @@ functions:
     handler: handler.addStudent
   updateStudentScore:
     handler: handler.updateStudentScore
+  deleteStudent:
+    handler: handler.deleteStudent
 
 custom:
   stages:
@@ -79,6 +81,8 @@ resources:
                     - !Join [ "", [ !GetAtt AddStudentLambdaFunction.Arn, "*" ] ]
                     - !GetAtt UpdateStudentScoreLambdaFunction.Arn
                     - !Join [ "", [ !GetAtt UpdateStudentScoreLambdaFunction.Arn, "*" ] ]
+                    - !GetAtt DeleteStudentLambdaFunction.Arn
+                    - !Join [ "", [ !GetAtt DeleteStudentLambdaFunction.Arn, "*" ] ]
 
     GetStudentsLambdaPermission:
       Type: AWS::Lambda::Permission
@@ -105,6 +109,13 @@ resources:
       Type: AWS::Lambda::Permission
       Properties:
         FunctionName: !GetAtt UpdateStudentScoreLambdaFunction.Arn
+        Action: lambda:InvokeFunction
+        Principal: !Join ["", ["logs.", !Ref AWS::Region, ".amazonaws.com" ] ]
+
+    DeleteStudentLambdaPermission:
+      Type: AWS::Lambda::Permission
+      Properties:
+        FunctionName: !GetAtt DeleteStudentLambdaFunction.Arn
         Action: lambda:InvokeFunction
         Principal: !Join ["", ["logs.", !Ref AWS::Region, ".amazonaws.com" ] ]
 
@@ -208,6 +219,25 @@ resources:
         TypeName: Mutation
         FieldName: addStudent
         DataSourceName: !GetAtt AddStudentLambdaDataSource.Name
+
+    DeleteStudentLambdaDataSource:
+      Type: AWS::AppSync::DataSource
+      Properties:
+        Type: AWS_LAMBDA
+        Name: deleteStudentDS_${self:provider.stage}
+        ApiId: !GetAtt AppSyncApi.ApiId
+        ServiceRoleArn: !GetAtt LambdaRole.Arn
+        LambdaConfig:
+          LambdaFunctionArn: !GetAtt DeleteStudentLambdaFunction.Arn
+
+    DeleteStudentQueryResolver:
+      Type: AWS::AppSync::Resolver
+      DependsOn: AppSyncSchema
+      Properties:
+        ApiId: !GetAtt AppSyncApi.ApiId
+        TypeName: Mutation
+        FieldName: deleteStudent
+        DataSourceName: !GetAtt DeleteStudentLambdaDataSource.Name
         
   Outputs:
     AppSyncAPIKey:

@@ -35,7 +35,7 @@ module.exports.getStudent = async (event) => {
       dynamo.get(params,function(err,data){
          if(err){
             console.log(err)
-            reject({"error": "There is an error while retrieving students"})
+            reject({"error": "There is an error while retrieving student"})
          }
          resolve(data.Items);
       })
@@ -93,5 +93,25 @@ module.exports.updateStudentScore = async (event) => {
       })
    })
    
+};
+
+module.exports.deleteStudent = async (event) => {
+
+   var params={
+      TableName:"Student",
+      Key:{
+         "name":event["arguments"]["name"]
+      }
+   }
+
+   return new Promise((resolve,reject)=>{
+      dynamo.delete(params,function(err,data){
+         if(err){
+            console.log(err)
+            reject(false)
+         }
+         resolve(true);
+      })
+   })
 };
 
