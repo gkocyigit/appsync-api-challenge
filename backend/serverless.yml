@@ -7,7 +7,6 @@ provider:
   runtime: nodejs12.x
   lambdaHashingVersion: 20201221
   profile: default
-  stage: dev
   region: eu-central-1
   iam:
     role:

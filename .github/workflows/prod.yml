@@ -1,0 +1,23 @@
+name: Prod Deploy
+on:
+  push:
+    branches:
+      - master
+jobs:
+  dev-deploy:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v1
+    - uses: actions/setup-node@v1
+      with:
+        node-version: '12.x'
+    - name: Install Serverless Framework
+      run: npm install -g serverless
+    - name: Serverless AWS authentication
+      run: sls config credentials --provider aws --key ${{ secrets.AWS_KEY }} --secret ${{ secrets.AWS_SECRET }}
+    - name: Navigate to backend folder
+      run: cd backend
+    - name: Install NPM dependencies
+      run: npm install
+    - name: Deploy Serverless Application
+      run: sls deploy -s prod
