@@ -20,4 +20,4 @@ jobs:
     - name: Install NPM dependencies
       run: npm install
     - name: Deploy Serverless Application
-      run:  serverless package -s dev && serverless deploy -s dev
+      run:  sls --config ./serverless.yml && sls deploy -s dev
