@@ -11,6 +11,8 @@ jobs:
     - uses: actions/setup-node@v1
       with:
         node-version: '12.x'
+    - name: Navigate to backend folder
+      run: cd backend && ls -al
     - name: Serverless Deploy
       uses: serverless/github-action@master
       with:
