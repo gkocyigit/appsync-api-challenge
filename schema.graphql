@@ -5,6 +5,7 @@ schema {
 
 type Mutation {
     addStudent(name: String!, score: Int): Student
+    updateStudentScore(name: String!, score: Int!): Student
 }
 
 type Query {

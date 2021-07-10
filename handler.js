@@ -65,3 +65,33 @@ module.exports.addStudent = async (event) => {
    
 };
 
+module.exports.updateStudentScore = async (event) => {
+   var studentName=event["arguments"]["name"]
+   var newScore=event["arguments"]["score"]
+
+   var params={
+      TableName:"Student",
+      Key:{
+         "name":studentName
+      },
+      UpdateExpression:" SET score=:newScore",
+      ExpressionAttributeValues:{
+         ":newScore":newScore
+      },
+      ReturnValues:"ALL_NEW"
+   }
+
+   return new Promise((resolve,reject)=>{
+      dynamo.update(params).promise()
+      .then((item)=>{
+         console.log(item)
+         resolve()
+      })
+      .catch((err)=>{
+         console.log(err);
+         reject({"error": "There is an error while updating student score"})
+      })
+   })
+   
+};
+

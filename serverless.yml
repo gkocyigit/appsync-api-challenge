@@ -23,6 +23,8 @@ functions:
     handler: handler.getStudent
   addStudent:
     handler: handler.addStudent
+  updateStudentScore:
+    handler: handler.updateStudentScore
 
 custom:
   stages:
@@ -75,6 +77,8 @@ resources:
                     - !Join [ "", [ !GetAtt GetStudentsLambdaFunction.Arn, "*" ] ]
                     - !GetAtt AddStudentLambdaFunction.Arn
                     - !Join [ "", [ !GetAtt AddStudentLambdaFunction.Arn, "*" ] ]
+                    - !GetAtt UpdateStudentScoreLambdaFunction.Arn
+                    - !Join [ "", [ !GetAtt UpdateStudentScoreLambdaFunction.Arn, "*" ] ]
 
     GetStudentsLambdaPermission:
       Type: AWS::Lambda::Permission
@@ -94,6 +98,13 @@ resources:
       Type: AWS::Lambda::Permission
       Properties:
         FunctionName: !GetAtt AddStudentLambdaFunction.Arn
+        Action: lambda:InvokeFunction
+        Principal: !Join ["", ["logs.", !Ref AWS::Region, ".amazonaws.com" ] ]
+
+    UpdateStudentScoreLambdaPermission:
+      Type: AWS::Lambda::Permission
+      Properties:
+        FunctionName: !GetAtt UpdateStudentScoreLambdaFunction.Arn
         Action: lambda:InvokeFunction
         Principal: !Join ["", ["logs.", !Ref AWS::Region, ".amazonaws.com" ] ]
 
@@ -158,6 +169,26 @@ resources:
         FieldName: getStudents
         DataSourceName: !GetAtt GetStudentsLambdaDataSource.Name
     
+    UpdateStudentScoreLambdaDataSource:
+      Type: AWS::AppSync::DataSource
+      Properties:
+        Type: AWS_LAMBDA
+        Name: updateStudentDS_${self:provider.stage}
+        ApiId: !GetAtt AppSyncApi.ApiId
+        ServiceRoleArn: !GetAtt LambdaRole.Arn
+        LambdaConfig:
+          LambdaFunctionArn: !GetAtt UpdateStudentScoreLambdaFunction.Arn
+
+
+    UpdateStudentScoreQueryResolver:
+      Type: AWS::AppSync::Resolver
+      DependsOn: AppSyncSchema
+      Properties:
+        ApiId: !GetAtt AppSyncApi.ApiId
+        TypeName: Mutation
+        FieldName: updateStudent
+        DataSourceName: !GetAtt UpdateStudentScoreLambdaDataSource.Name
+
     AddStudentLambdaDataSource:
       Type: AWS::AppSync::DataSource
       Properties:
