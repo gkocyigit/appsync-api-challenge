@@ -12,7 +12,7 @@ jobs:
       with:
         node-version: '12.x'
     - name: Navigate to backend folder
-      run: cd backend && ls -al
+      run: cd backend && ls -al && pwd
     - name: Install Serverless Framework
       run: npm install -g serverless
     - name: Serverless AWS authentication
