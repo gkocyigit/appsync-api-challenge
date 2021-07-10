@@ -11,8 +11,6 @@ jobs:
     - uses: actions/setup-node@v1
       with:
         node-version: '12.x'
-    - name: Navigate to backend folder
-      run: cd backend && ls -al && pwd
     - name: Install Serverless Framework
       run: npm install -g serverless
     - name: Install NPM dependencies
