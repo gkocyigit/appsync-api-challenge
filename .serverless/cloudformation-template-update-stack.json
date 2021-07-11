@@ -89,6 +89,18 @@
         "LogGroupName": "/aws/lambda/serverless-guru-challenge-dev-addStudent"
       }
     },
+    "UpdateStudentScoreLogGroup": {
+      "Type": "AWS::Logs::LogGroup",
+      "Properties": {
+        "LogGroupName": "/aws/lambda/serverless-guru-challenge-dev-updateStudentScore"
+      }
+    },
+    "DeleteStudentLogGroup": {
+      "Type": "AWS::Logs::LogGroup",
+      "Properties": {
+        "LogGroupName": "/aws/lambda/serverless-guru-challenge-dev-deleteStudent"
+      }
+    },
     "IamRoleLambdaExecution": {
       "Type": "AWS::IAM::Role",
       "Properties": {
@@ -180,7 +192,7 @@
           "S3Bucket": {
             "Ref": "ServerlessDeploymentBucket"
           },
-          "S3Key": "serverless/serverless-guru-challenge/dev/1625909379923-2021-07-10T09:29:39.923Z/serverless-guru-challenge.zip"
+          "S3Key": "serverless/serverless-guru-challenge/dev/1626034469448-2021-07-11T20:14:29.448Z/serverless-guru-challenge.zip"
         },
         "Handler": "handler.getStudents",
         "Runtime": "nodejs12.x",
@@ -205,7 +217,7 @@
           "S3Bucket": {
             "Ref": "ServerlessDeploymentBucket"
           },
-          "S3Key": "serverless/serverless-guru-challenge/dev/1625909379923-2021-07-10T09:29:39.923Z/serverless-guru-challenge.zip"
+          "S3Key": "serverless/serverless-guru-challenge/dev/1626034469448-2021-07-11T20:14:29.448Z/serverless-guru-challenge.zip"
         },
         "Handler": "handler.getStudent",
         "Runtime": "nodejs12.x",
@@ -230,7 +242,7 @@
           "S3Bucket": {
             "Ref": "ServerlessDeploymentBucket"
           },
-          "S3Key": "serverless/serverless-guru-challenge/dev/1625909379923-2021-07-10T09:29:39.923Z/serverless-guru-challenge.zip"
+          "S3Key": "serverless/serverless-guru-challenge/dev/1626034469448-2021-07-11T20:14:29.448Z/serverless-guru-challenge.zip"
         },
         "Handler": "handler.addStudent",
         "Runtime": "nodejs12.x",
@@ -248,34 +260,104 @@
         "AddStudentLogGroup"
       ]
     },
-    "GetStudentsLambdaVersionc3GNOAikEhXqYcDj7pBnImHzFNSUuE4hvnH9zFOjTo": {
+    "UpdateStudentScoreLambdaFunction": {
+      "Type": "AWS::Lambda::Function",
+      "Properties": {
+        "Code": {
+          "S3Bucket": {
+            "Ref": "ServerlessDeploymentBucket"
+          },
+          "S3Key": "serverless/serverless-guru-challenge/dev/1626034469448-2021-07-11T20:14:29.448Z/serverless-guru-challenge.zip"
+        },
+        "Handler": "handler.updateStudentScore",
+        "Runtime": "nodejs12.x",
+        "FunctionName": "serverless-guru-challenge-dev-updateStudentScore",
+        "MemorySize": 1024,
+        "Timeout": 6,
+        "Role": {
+          "Fn::GetAtt": [
+            "IamRoleLambdaExecution",
+            "Arn"
+          ]
+        }
+      },
+      "DependsOn": [
+        "UpdateStudentScoreLogGroup"
+      ]
+    },
+    "DeleteStudentLambdaFunction": {
+      "Type": "AWS::Lambda::Function",
+      "Properties": {
+        "Code": {
+          "S3Bucket": {
+            "Ref": "ServerlessDeploymentBucket"
+          },
+          "S3Key": "serverless/serverless-guru-challenge/dev/1626034469448-2021-07-11T20:14:29.448Z/serverless-guru-challenge.zip"
+        },
+        "Handler": "handler.deleteStudent",
+        "Runtime": "nodejs12.x",
+        "FunctionName": "serverless-guru-challenge-dev-deleteStudent",
+        "MemorySize": 1024,
+        "Timeout": 6,
+        "Role": {
+          "Fn::GetAtt": [
+            "IamRoleLambdaExecution",
+            "Arn"
+          ]
+        }
+      },
+      "DependsOn": [
+        "DeleteStudentLogGroup"
+      ]
+    },
+    "GetStudentsLambdaVersionrV5d6JD1DSd9b4umi6j6zd3Emz7PRar5X5tGhKRooj0": {
       "Type": "AWS::Lambda::Version",
       "DeletionPolicy": "Retain",
       "Properties": {
         "FunctionName": {
           "Ref": "GetStudentsLambdaFunction"
         },
-        "CodeSha256": "LkeI1H6MQ6OArYyDr7UyQJnM2IBpd0XVDTcgMCl4kHc="
+        "CodeSha256": "B6sj3eOT//rpcTT1ujxsAmcp2xyeEVTs//joDC9jUMU="
       }
     },
-    "GetStudentLambdaVersionbKHN1o0ucoAYadz8PnxHE4eWzrR3jX9gWaNaDWh0": {
+    "GetStudentLambdaVersionfpOvO7lU19b3jM1bMS6tU42LFkbaD2P6wS9sfGk": {
       "Type": "AWS::Lambda::Version",
       "DeletionPolicy": "Retain",
       "Properties": {
         "FunctionName": {
           "Ref": "GetStudentLambdaFunction"
         },
-        "CodeSha256": "LkeI1H6MQ6OArYyDr7UyQJnM2IBpd0XVDTcgMCl4kHc="
+        "CodeSha256": "B6sj3eOT//rpcTT1ujxsAmcp2xyeEVTs//joDC9jUMU="
       }
     },
-    "AddStudentLambdaVersionZ1NFBzag9TSXU2Zq8qUpyeDBF7ToPd43PEvQm6i4": {
+    "AddStudentLambdaVersionNBP3a1dkBObrLTo4ZwLTtZBuycMKKUix6IyTT3w": {
       "Type": "AWS::Lambda::Version",
       "DeletionPolicy": "Retain",
       "Properties": {
         "FunctionName": {
           "Ref": "AddStudentLambdaFunction"
         },
-        "CodeSha256": "LkeI1H6MQ6OArYyDr7UyQJnM2IBpd0XVDTcgMCl4kHc="
+        "CodeSha256": "B6sj3eOT//rpcTT1ujxsAmcp2xyeEVTs//joDC9jUMU="
+      }
+    },
+    "UpdateStudentScoreLambdaVersionDbFHMGbit0cWn1PJYV9VKPE2d5bNohaFz9XFrp7Sc": {
+      "Type": "AWS::Lambda::Version",
+      "DeletionPolicy": "Retain",
+      "Properties": {
+        "FunctionName": {
+          "Ref": "UpdateStudentScoreLambdaFunction"
+        },
+        "CodeSha256": "B6sj3eOT//rpcTT1ujxsAmcp2xyeEVTs//joDC9jUMU="
+      }
+    },
+    "DeleteStudentLambdaVersiongHs3FYtK67zNLwFQC3GmpoR4JPUczV8ZQGqWRpW904": {
+      "Type": "AWS::Lambda::Version",
+      "DeletionPolicy": "Retain",
+      "Properties": {
+        "FunctionName": {
+          "Ref": "DeleteStudentLambdaFunction"
+        },
+        "CodeSha256": "B6sj3eOT//rpcTT1ujxsAmcp2xyeEVTs//joDC9jUMU="
       }
     },
     "StudentDynamoDbTable": {
@@ -387,6 +469,46 @@
                           "*"
                         ]
                       ]
+                    },
+                    {
+                      "Fn::GetAtt": [
+                        "UpdateStudentScoreLambdaFunction",
+                        "Arn"
+                      ]
+                    },
+                    {
+                      "Fn::Join": [
+                        "",
+                        [
+                          {
+                            "Fn::GetAtt": [
+                              "UpdateStudentScoreLambdaFunction",
+                              "Arn"
+                            ]
+                          },
+                          "*"
+                        ]
+                      ]
+                    },
+                    {
+                      "Fn::GetAtt": [
+                        "DeleteStudentLambdaFunction",
+                        "Arn"
+                      ]
+                    },
+                    {
+                      "Fn::Join": [
+                        "",
+                        [
+                          {
+                            "Fn::GetAtt": [
+                              "DeleteStudentLambdaFunction",
+                              "Arn"
+                            ]
+                          },
+                          "*"
+                        ]
+                      ]
                     }
                   ]
                 }
@@ -468,6 +590,54 @@
         }
       }
     },
+    "UpdateStudentScoreLambdaPermission": {
+      "Type": "AWS::Lambda::Permission",
+      "Properties": {
+        "FunctionName": {
+          "Fn::GetAtt": [
+            "UpdateStudentScoreLambdaFunction",
+            "Arn"
+          ]
+        },
+        "Action": "lambda:InvokeFunction",
+        "Principal": {
+          "Fn::Join": [
+            "",
+            [
+              "logs.",
+              {
+                "Ref": "AWS::Region"
+              },
+              ".amazonaws.com"
+            ]
+          ]
+        }
+      }
+    },
+    "DeleteStudentLambdaPermission": {
+      "Type": "AWS::Lambda::Permission",
+      "Properties": {
+        "FunctionName": {
+          "Fn::GetAtt": [
+            "DeleteStudentLambdaFunction",
+            "Arn"
+          ]
+        },
+        "Action": "lambda:InvokeFunction",
+        "Principal": {
+          "Fn::Join": [
+            "",
+            [
+              "logs.",
+              {
+                "Ref": "AWS::Region"
+              },
+              ".amazonaws.com"
+            ]
+          ]
+        }
+      }
+    },
     "AppSyncApi": {
       "Type": "AWS::AppSync::GraphQLApi",
       "Properties": {
@@ -495,7 +665,7 @@
             "ApiId"
           ]
         },
-        "Definition": "schema {\r\n    query:Query\r\n    mutation:Mutation\r\n}\r\n\r\ntype Mutation {\r\n    addStudent(name: String!, score: Int): Student\r\n}\r\n\r\ntype Query {\r\n    getStudents: [Student]\r\n    getStudent(name: String!): Student!\r\n}\r\n\r\ntype Student {\r\n    name: String!\r\n    score: Int\r\n}"
+        "Definition": "schema {\r\n    query:Query\r\n    mutation:Mutation\r\n}\r\n\r\ntype Mutation {\r\n    addStudent(name: String!, score: Int): Student\r\n    updateStudentScore(name: String!, score: Int!): Student\r\n    deleteStudent(name: String!): Boolean!\r\n}\r\n\r\ntype Query {\r\n    getStudents: [Student]\r\n    getStudent(name: String!): Student!\r\n}\r\n\r\ntype Student {\r\n    name: String!\r\n    score: Int\r\n}"
       }
     },
     "GetStudentLambdaDataSource": {
@@ -596,6 +766,55 @@
         }
       }
     },
+    "UpdateStudentScoreLambdaDataSource": {
+      "Type": "AWS::AppSync::DataSource",
+      "Properties": {
+        "Type": "AWS_LAMBDA",
+        "Name": "updateStudentDS_dev",
+        "ApiId": {
+          "Fn::GetAtt": [
+            "AppSyncApi",
+            "ApiId"
+          ]
+        },
+        "ServiceRoleArn": {
+          "Fn::GetAtt": [
+            "LambdaRole",
+            "Arn"
+          ]
+        },
+        "LambdaConfig": {
+          "LambdaFunctionArn": {
+            "Fn::GetAtt": [
+              "UpdateStudentScoreLambdaFunction",
+              "Arn"
+            ]
+          }
+        }
+      }
+    },
+    "UpdateStudentScoreQueryResolver": {
+      "Type": "AWS::AppSync::Resolver",
+      "DependsOn": [
+        "AppSyncSchema"
+      ],
+      "Properties": {
+        "ApiId": {
+          "Fn::GetAtt": [
+            "AppSyncApi",
+            "ApiId"
+          ]
+        },
+        "TypeName": "Mutation",
+        "FieldName": "updateStudentScore",
+        "DataSourceName": {
+          "Fn::GetAtt": [
+            "UpdateStudentScoreLambdaDataSource",
+            "Name"
+          ]
+        }
+      }
+    },
     "AddStudentLambdaDataSource": {
       "Type": "AWS::AppSync::DataSource",
       "Properties": {
@@ -644,6 +863,55 @@
           ]
         }
       }
+    },
+    "DeleteStudentLambdaDataSource": {
+      "Type": "AWS::AppSync::DataSource",
+      "Properties": {
+        "Type": "AWS_LAMBDA",
+        "Name": "deleteStudentDS_dev",
+        "ApiId": {
+          "Fn::GetAtt": [
+            "AppSyncApi",
+            "ApiId"
+          ]
+        },
+        "ServiceRoleArn": {
+          "Fn::GetAtt": [
+            "LambdaRole",
+            "Arn"
+          ]
+        },
+        "LambdaConfig": {
+          "LambdaFunctionArn": {
+            "Fn::GetAtt": [
+              "DeleteStudentLambdaFunction",
+              "Arn"
+            ]
+          }
+        }
+      }
+    },
+    "DeleteStudentQueryResolver": {
+      "Type": "AWS::AppSync::Resolver",
+      "DependsOn": [
+        "AppSyncSchema"
+      ],
+      "Properties": {
+        "ApiId": {
+          "Fn::GetAtt": [
+            "AppSyncApi",
+            "ApiId"
+          ]
+        },
+        "TypeName": "Mutation",
+        "FieldName": "deleteStudent",
+        "DataSourceName": {
+          "Fn::GetAtt": [
+            "DeleteStudentLambdaDataSource",
+            "Name"
+          ]
+        }
+      }
     }
   },
   "Outputs": {
@@ -655,19 +923,31 @@
     "GetStudentsLambdaFunctionQualifiedArn": {
       "Description": "Current Lambda function version",
       "Value": {
-        "Ref": "GetStudentsLambdaVersionc3GNOAikEhXqYcDj7pBnImHzFNSUuE4hvnH9zFOjTo"
+        "Ref": "GetStudentsLambdaVersionrV5d6JD1DSd9b4umi6j6zd3Emz7PRar5X5tGhKRooj0"
       }
     },
     "GetStudentLambdaFunctionQualifiedArn": {
       "Description": "Current Lambda function version",
       "Value": {
-        "Ref": "GetStudentLambdaVersionbKHN1o0ucoAYadz8PnxHE4eWzrR3jX9gWaNaDWh0"
+        "Ref": "GetStudentLambdaVersionfpOvO7lU19b3jM1bMS6tU42LFkbaD2P6wS9sfGk"
       }
     },
     "AddStudentLambdaFunctionQualifiedArn": {
       "Description": "Current Lambda function version",
       "Value": {
-        "Ref": "AddStudentLambdaVersionZ1NFBzag9TSXU2Zq8qUpyeDBF7ToPd43PEvQm6i4"
+        "Ref": "AddStudentLambdaVersionNBP3a1dkBObrLTo4ZwLTtZBuycMKKUix6IyTT3w"
+      }
+    },
+    "UpdateStudentScoreLambdaFunctionQualifiedArn": {
+      "Description": "Current Lambda function version",
+      "Value": {
+        "Ref": "UpdateStudentScoreLambdaVersionDbFHMGbit0cWn1PJYV9VKPE2d5bNohaFz9XFrp7Sc"
+      }
+    },
+    "DeleteStudentLambdaFunctionQualifiedArn": {
+      "Description": "Current Lambda function version",
+      "Value": {
+        "Ref": "DeleteStudentLambdaVersiongHs3FYtK67zNLwFQC3GmpoR4JPUczV8ZQGqWRpW904"
       }
     },
     "AppSyncAPIKey": {

@@ -84,8 +84,7 @@ module.exports.updateStudentScore = async (event) => {
    return new Promise((resolve,reject)=>{
       dynamo.update(params).promise()
       .then((item)=>{
-         console.log(item)
-         resolve()
+         resolve(item.Attributes)
       })
       .catch((err)=>{
          console.log(err);

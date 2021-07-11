@@ -124,7 +124,7 @@ resources:
       Type: AWS::AppSync::GraphQLApi
       Properties:
         AuthenticationType: "API_KEY"
-        Name: ${self:service}-${self:provider.stage}
+        Name: ${self:service}-${opt:stage,'dev'}
 
 
     AppSyncAPIKey:
@@ -144,7 +144,7 @@ resources:
       Type: AWS::AppSync::DataSource
       Properties:
         Type: AWS_LAMBDA
-        Name: getStudentDS_${self:provider.stage}
+        Name: getStudentDS_${opt:stage,'dev'}
         ApiId: !GetAtt AppSyncApi.ApiId
         ServiceRoleArn: !GetAtt LambdaRole.Arn
         LambdaConfig:
@@ -165,7 +165,7 @@ resources:
       Type: AWS::AppSync::DataSource
       Properties:
         Type: AWS_LAMBDA
-        Name: getStudentsDS_${self:provider.stage}
+        Name: getStudentsDS_${opt:stage,'dev'}
         ApiId: !GetAtt AppSyncApi.ApiId
         ServiceRoleArn: !GetAtt LambdaRole.Arn
         LambdaConfig:
@@ -184,7 +184,7 @@ resources:
       Type: AWS::AppSync::DataSource
       Properties:
         Type: AWS_LAMBDA
-        Name: updateStudentDS_${self:provider.stage}
+        Name: updateStudentDS_${opt:stage,'dev'}
         ApiId: !GetAtt AppSyncApi.ApiId
         ServiceRoleArn: !GetAtt LambdaRole.Arn
         LambdaConfig:
@@ -197,14 +197,14 @@ resources:
       Properties:
         ApiId: !GetAtt AppSyncApi.ApiId
         TypeName: Mutation
-        FieldName: updateStudent
+        FieldName: updateStudentScore
         DataSourceName: !GetAtt UpdateStudentScoreLambdaDataSource.Name
 
     AddStudentLambdaDataSource:
       Type: AWS::AppSync::DataSource
       Properties:
         Type: AWS_LAMBDA
-        Name: addStudentDS_${self:provider.stage}
+        Name: addStudentDS_${opt:stage,'dev'}
         ApiId: !GetAtt AppSyncApi.ApiId
         ServiceRoleArn: !GetAtt LambdaRole.Arn
         LambdaConfig:
@@ -224,7 +224,7 @@ resources:
       Type: AWS::AppSync::DataSource
       Properties:
         Type: AWS_LAMBDA
-        Name: deleteStudentDS_${self:provider.stage}
+        Name: deleteStudentDS_${opt:stage,'dev'}
         ApiId: !GetAtt AppSyncApi.ApiId
         ServiceRoleArn: !GetAtt LambdaRole.Arn
         LambdaConfig:
