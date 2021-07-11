@@ -8,7 +8,7 @@ const dynamo = new AWS.DynamoDB.DocumentClient();
 
 module.exports.getStudents = async (event) =>  {
    var params={
-      TableName:"Student"
+      TableName: process.env["DYNAMO_TABLE_NAME"]
    }
 
    return new Promise((resolve,reject)=>{
@@ -25,7 +25,7 @@ module.exports.getStudents = async (event) =>  {
 module.exports.getStudent = async (event) => {
 
    var params={
-      TableName:"Student",
+      TableName: process.env["DYNAMO_TABLE_NAME"],
       Key:{
          "name":event["arguments"]["name"]
       }
@@ -48,7 +48,7 @@ module.exports.addStudent = async (event) => {
       student["score"]=event["arguments"]["score"]
    }
    var params={
-      TableName:"Student",
+      TableName: process.env["DYNAMO_TABLE_NAME"],
       Item:student,
    }
 
@@ -70,7 +70,7 @@ module.exports.updateStudentScore = async (event) => {
    var newScore=event["arguments"]["score"]
 
    var params={
-      TableName:"Student",
+      TableName:process.env["DYNAMO_TABLE_NAME"],
       Key:{
          "name":studentName
       },
@@ -97,7 +97,7 @@ module.exports.updateStudentScore = async (event) => {
 module.exports.deleteStudent = async (event) => {
 
    var params={
-      TableName:"Student",
+      TableName:process.env["DYNAMO_TABLE_NAME"],
       Key:{
          "name":event["arguments"]["name"]
       }

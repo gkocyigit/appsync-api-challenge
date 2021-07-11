@@ -8,6 +8,8 @@ provider:
   lambdaHashingVersion: 20201221
   profile: default
   region: eu-central-1
+  environment:
+    DYNAMO_TABLE_NAME: Student-${opt:stage,'dev'}
   iam:
     role:
       statements:
